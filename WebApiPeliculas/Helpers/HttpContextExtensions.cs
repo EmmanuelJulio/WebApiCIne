@@ -1,0 +1,17 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+
+namespace WebApiPeliculas.Helpers
+{
+    public static class HttpContextExtensions 
+    {
+        public async static Task InsertarParametrosPaginacion<T>(this HttpContext httpContext, 
+            IQueryable<T> queryable, int cantidadRegistrosPorPagina)
+        {
+            double cantidad = await queryable.CountAsync();
+            double cantidadPaginas = Math.Ceiling(cantidad / cantidadRegistrosPorPagina);
+            httpContext.Response.Headers.Add("candidadPaginas", cantidadPaginas.ToString());
+
+        }
+    }
+}

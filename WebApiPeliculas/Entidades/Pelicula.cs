@@ -2,7 +2,7 @@
 
 namespace WebApiPeliculas.Entidades
 {
-    public class Pelicula
+    public class Pelicula : IId
     {
         public int  Id { get; set; }
         [Required]
@@ -14,5 +14,7 @@ namespace WebApiPeliculas.Entidades
         public string Poster { get; set; }
         public List<PeliculasActores> PeliculasActores { get; set; }
         public List<PeliculasGeneros> peliculasGeneros { get; set; }
+
+        public List<PeliculasSalasDeCine> PeliculasSalasDeCine { get; set; }
     }
 }

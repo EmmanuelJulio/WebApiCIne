@@ -1,6 +1,8 @@
-﻿namespace WebApiPeliculas.Entidades
+﻿using WebApiPeliculas.DTOS;
+
+namespace WebApiPeliculas.Entidades
 {
-    public class PeliculasActores
+    public class PeliculasActores 
     {
         public int ActorID { get; set; }
         public int PeliculaID { get; set; }

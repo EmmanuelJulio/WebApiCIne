@@ -9,6 +9,7 @@ namespace WebApiPeliculas.DTOS
     {
        
         [PesoArchivoValidacion(4)]
+
         [TipoArchivoValidacion(GrupoTipoArchivo.Imagen)]
         public IFormFile Poster { get; set; }
         [ModelBinder(BinderType =typeof(TypeBinder<List<int>>))]

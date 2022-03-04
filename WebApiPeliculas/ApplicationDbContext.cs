@@ -1,10 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
+using System.Security.Claims;
 using WebApiPeliculas.Entidades;
+
 
 namespace WebApiPeliculas
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
+        
+
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 
@@ -16,9 +24,14 @@ namespace WebApiPeliculas
             modelBuilder.Entity<PeliculasGeneros>()
                 .HasKey(x=> new {x.GeneroID, x.PeliculaID });
 
+            modelBuilder.Entity<PeliculasSalasDeCine>()
+                .HasKey(x => new { x.PeliculaID, x.SalaDeCineID });
+
+            SeedData(modelBuilder);
+
             base.OnModelCreating(modelBuilder);
         }
-        private void SeedData(ModelBuilder modelBuilder)
+        private void SeedData(ModelBuilder modelBuilder )
         {
 
             //var rolAdminId = "9aae0b6d-d50c-4d0a-9b90-2a6873e3845d";
@@ -33,7 +46,7 @@ namespace WebApiPeliculas
 
             //var passwordHasher = new PasswordHasher<IdentityUser>();
 
-            //var username = "felipe@hotmail.com";
+            //var username = "emajulio@gmail.com";
 
             //var usuarioAdmin = new IdentityUser()
             //{
@@ -60,16 +73,16 @@ namespace WebApiPeliculas
             //        ClaimValue = "Admin"
             //    });
 
-            //var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+            var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
 
-            //modelBuilder.Entity<SalaDeCine>()
-            //   .HasData(new List<SalaDeCine>
-            //   {
-            //        //new SalaDeCine{Id = 1, Nombre = "Agora", Ubicacion = geometryFactory.CreatePoint(new Coordinate(-69.9388777, 18.4839233))},
-            //        new SalaDeCine{Id = 4, Nombre = "Sambil", Ubicacion = geometryFactory.CreatePoint(new Coordinate(-69.9118804, 18.4826214))},
-            //        new SalaDeCine{Id = 5, Nombre = "Megacentro", Ubicacion = geometryFactory.CreatePoint(new Coordinate(-69.856427, 18.506934))},
-            //        new SalaDeCine{Id = 6, Nombre = "Village East Cinema", Ubicacion = geometryFactory.CreatePoint(new Coordinate(-73.986227, 40.730898))}
-            //   });
+            modelBuilder.Entity<SalaDeCine>()
+               .HasData(new List<SalaDeCine>
+               {
+                    //new SalaDeCine{Id = 1, Nombre = "Agora", Ubicacion = geometryFactory.CreatePoint(new Coordinate(-69.9388777, 18.4839233))},
+                    new SalaDeCine{Id = 6, Nombre = "Sambil", Ubicacion = geometryFactory.CreatePoint(new Coordinate(-69.9118804, 18.4826214))},
+                    new SalaDeCine{Id = 7, Nombre = "Megacentro", Ubicacion = geometryFactory.CreatePoint(new Coordinate(-69.856427, 18.506934))},
+                    new SalaDeCine{Id = 8, Nombre = "Village East Cinema", Ubicacion = geometryFactory.CreatePoint(new Coordinate(-73.986227, 40.730898))}
+               });
 
             var aventura = new Genero() { Id = 4, Nombre = "Aventura" };
             var animation = new Genero() { Id = 5, Nombre = "Animación" };
@@ -82,9 +95,9 @@ namespace WebApiPeliculas
                     aventura, animation, suspenso, romance
                 });
 
-            var jimCarrey = new Actor() { id = 5, Nombre = "Jim Carrey", FechaNacimiento = new DateTime(1962, 01, 17) };
-            var robertDowney = new Actor() { id = 6, Nombre = "Robert Downey Jr.", FechaNacimiento = new DateTime(1965, 4, 4) };
-            var chrisEvans = new Actor() { id = 7, Nombre = "Chris Evans", FechaNacimiento = new DateTime(1981, 06, 13) };
+            var jimCarrey = new Actor() { Id = 5, Nombre = "Jim Carrey", FechaNacimiento = new DateTime(1962, 01, 17) };
+            var robertDowney = new Actor() { Id = 6, Nombre = "Robert Downey Jr.", FechaNacimiento = new DateTime(1965, 4, 4) };
+            var chrisEvans = new Actor() { Id = 7, Nombre = "Chris Evans", FechaNacimiento = new DateTime(1981, 06, 13) };
 
             modelBuilder.Entity<Actor>()
                 .HasData(new List<Actor>
@@ -153,11 +166,11 @@ namespace WebApiPeliculas
             modelBuilder.Entity<PeliculasActores>().HasData(
                 new List<PeliculasActores>()
                 {
-                    new PeliculasActores(){PeliculaID = endgame.Id, ActorID = robertDowney.id, Personaje = "Tony Stark", Orden = 1},
-                    new PeliculasActores(){PeliculaID = endgame.Id, ActorID= chrisEvans.id, Personaje = "Steve Rogers", Orden = 2},
-                    new PeliculasActores(){PeliculaID = iw.Id, ActorID = robertDowney.id, Personaje = "Tony Stark", Orden = 1},
-                    new PeliculasActores(){PeliculaID = iw.Id, ActorID = chrisEvans.id, Personaje = "Steve Rogers", Orden = 2},
-                    new PeliculasActores(){PeliculaID = sonic.Id, ActorID = jimCarrey.id, Personaje = "Dr. Ivo Robotnik", Orden = 1}
+                    new PeliculasActores(){PeliculaID = endgame.Id, ActorID = robertDowney.Id, Personaje = "Tony Stark", Orden = 1},
+                    new PeliculasActores(){PeliculaID = endgame.Id, ActorID= chrisEvans.Id, Personaje = "Steve Rogers", Orden = 2},
+                    new PeliculasActores(){PeliculaID = iw.Id, ActorID = robertDowney.Id, Personaje = "Tony Stark", Orden = 1},
+                    new PeliculasActores(){PeliculaID = iw.Id, ActorID = chrisEvans.Id, Personaje = "Steve Rogers", Orden = 2},
+                    new PeliculasActores(){PeliculaID = sonic.Id, ActorID = jimCarrey.Id, Personaje = "Dr. Ivo Robotnik", Orden = 1}
                 });
         }
         public DbSet<Genero> Generos { get; set; }
@@ -165,5 +178,9 @@ namespace WebApiPeliculas
         public DbSet<Pelicula> Peliculas { get; set; }
         public DbSet<PeliculasActores> PeliculasActores { get; set; }
         public DbSet<PeliculasGeneros> PeliculasGeneros { get; set; }
+
+        public DbSet<PeliculasSalasDeCine> peliculasSalasDeCines { get; set; }
+        public DbSet<SalaDeCine> salaDeCines { get; set; }
+        public DbSet<Review> Reviews{ get; set; }
     }
 }

@@ -2,9 +2,9 @@
 
 namespace WebApiPeliculas.Entidades
 {
-    public class Actor
+    public class Actor : IId
     {
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(120)]

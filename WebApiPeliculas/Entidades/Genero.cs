@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace WebApiPeliculas.Entidades
 {
-    public class Genero
+    public class Genero : IId
     {
         [Required]
         public int Id { get; set; }

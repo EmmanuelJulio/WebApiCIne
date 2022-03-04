@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiPeliculas.DTOS;
@@ -8,60 +10,42 @@ namespace WebApiPeliculas.Controllers
 {
     [ApiController]
     [Route("api/generos")]
-    public class GenerosController : Controller
+    public class GenerosController : CustomBaseController
     {
-        private readonly ApplicationDbContext context;
-        private readonly IMapper mapper;
-
         public GenerosController(ApplicationDbContext context ,IMapper mapper)
+            : base( context, mapper  )
         {
-            this.context = context;
-            this.mapper = mapper;
+         
         }
         [HttpGet]
         public async Task <ActionResult<List<GeneroDTO>>> Get()
         {
-            var Generos = await context.Generos.ToListAsync();
-            return  mapper.Map<List<GeneroDTO>>(Generos);
+            return await Get<Genero, GeneroDTO>();
             
         }
         [HttpGet("{id:int}",Name ="obtenerGenero")]
         public async Task<ActionResult<GeneroDTO>> GetbyId(int id)
         {
-            var Genero = await context.Generos.FirstAsync(x=>x.Id==id);
-            return mapper.Map<GeneroDTO>(Genero);
+            return await Get<Genero, GeneroDTO>(id);
         }
 
         [HttpPost]
         public async Task<ActionResult<GeneroDTO>> Post([FromBody] GeneroCreacionDTO generoCreacionDTO)
         {
-            var genero = mapper.Map<Genero>(generoCreacionDTO);
-            context.Add(genero);
-             await context.SaveChangesAsync();
-            var generoDTO = mapper.Map<GeneroDTO>(genero);
-            return new CreatedAtRouteResult("obtenerGenero", new { id = generoDTO.Id }, generoDTO);
+           return await Post<GeneroCreacionDTO, Genero,GeneroDTO>(generoCreacionDTO, "obtenerGenero");
         }
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id,GeneroCreacionDTO generoCreacionDTO)
         {
-            var entidad = mapper.Map<Genero>(generoCreacionDTO);
-            entidad.Id = id;
 
-            context.Entry(entidad).State = EntityState.Modified;
-            await context.SaveChangesAsync();
-            return NoContent(); 
+            return await Put<GeneroCreacionDTO,Genero>(id, generoCreacionDTO);
 
         }
         [HttpDelete("{id:int}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles="Admin")]
         public async Task<ActionResult> DeleteById(int id)
         {
-            var existe = await context.Generos.FirstOrDefaultAsync(x=>x.Id==id);
-            if (existe==null)
-                return NotFound();
-
-            context.Generos.Remove(existe);
-            context.SaveChanges();
-            return Ok("Eliminado genero");
+          return await Delete<Genero>(id);
 
         }
 
